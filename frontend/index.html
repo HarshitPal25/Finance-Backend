@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Dashboard - Premium Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Elements for Glassmorphism -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <!-- Login Screen -->
+    <div id="login-container" class="glass-panel">
+        <div class="login-header">
+            <h2>Welcome Back</h2>
+            <p>Sign in to your finance dashboard</p>
+        </div>
+        <form id="login-form">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required placeholder="Enter your username">
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter your password">
+            </div>
+            <div id="login-error" class="error-text"></div>
+            <button type="submit" class="btn-primary">Sign In</button>
+        </form>
+    </div>
+
+    <!-- Dashboard App (Hidden by default) -->
+    <div id="app-container" class="hidden">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar glass-panel">
+            <div class="logo">
+                <div class="logo-circle"></div>
+                <h3>FinDash</h3>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-view="dashboard">Dashboard</a>
+                <a href="#" class="nav-item" data-view="records">Transactions</a>
+                <a href="#" class="nav-item hidden" id="nav-users" data-view="users">Manage Users</a>
+            </nav>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <p id="display-username" class="user-name">Loading...</p>
+                    <p id="display-role" class="user-role">Role</p>
+                </div>
+            </div>
+            <button id="logout-btn" class="btn-secondary">Log Out</button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-nav">
+                <h1 id="page-title">Dashboard Overview</h1>
+                <div id="date-display"></div>
+            </header>
+
+            <!-- Error/Success Notifications -->
+            <div id="notification" class="notification hidden"></div>
+
+            <!-- view: DASHBOARD -->
+            <div id="view-dashboard" class="view-section active">
+                
+                <!-- Summary Cards -->
+                <div class="summary-grid">
+                    <div class="glass-card metric-card">
+                        <div class="metric-icon income-icon">↓</div>
+                        <div class="metric-info">
+                            <p>Total Income</p>
+                            <h2 id="total-income">₹0.00</h2>
+                        </div>
+                    </div>
+                    <div class="glass-card metric-card">
+                        <div class="metric-icon expense-icon">↑</div>
+                        <div class="metric-info">
+                            <p>Total Expenses</p>
+                            <h2 id="total-expenses">₹0.00</h2>
+                        </div>
+                    </div>
+                    <div class="glass-card metric-card primary-metric">
+                        <div class="metric-icon balance-icon">=</div>
+                        <div class="metric-info">
+                            <p>Net Balance</p>
+                            <h2 id="net-balance">₹0.00</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts & Breakdown -->
+                <div class="charts-grid">
+                    <div class="glass-card chart-container">
+                        <h3>Category Breakdown</h3>
+                        <div class="category-list" id="category-breakdown-list">
+                            <!-- Populated by JS -->
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="glass-card chart-container">
+                        <h3>Recent Transactions</h3>
+                        <div class="recent-list" id="recent-activity-list">
+                            <!-- Populated by JS -->
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- view: RECORDS -->
+            <div id="view-records" class="view-section hidden">
+                <div class="records-header">
+                    <div class="search-box">
+                        <input type="text" id="record-search" placeholder="Search transactions...">
+                    </div>
+                    <!-- Only Admins will see this button (handled via JS) -->
+                    <button id="add-record-btn" class="btn-primary hidden">+ New Record</button>
+                </div>
+
+                <div class="glass-card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- view: USERS -->
+            <div id="view-users" class="view-section hidden">
+                <div class="records-header">
+                    <h2>User Management</h2>
+                </div>
+
+                <div class="glass-card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Add Record Modal (Hidden by default) -->
+    <div id="record-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>Add New Transaction</h3>
+                <button class="close-modal-btn" id="close-modal">&times;</button>
+            </div>
+            <form id="record-form">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Type</label>
+                        <select id="record-type" required>
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Category</label>
+                        <select id="record-category" required>
+                            <option value="salary">Salary</option>
+                            <option value="food">Food & Dining</option>
+                            <option value="transport">Transportation</option>
+                            <option value="rent">Rent</option>
+                            <option value="utilities">Utilities</option>
+                            <option value="freelance">Freelance</option>
+                            <option value="investment">Investment</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Amount (₹)</label>
+                        <input type="number" id="record-amount" step="0.01" min="0.01" required placeholder="0.00">
+                    </div>
+                    <div class="input-group">
+                        <label>Date</label>
+                        <input type="date" id="record-date" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Description</label>
+                    <input type="text" id="record-description" placeholder="What was this for?">
+                </div>
+                <div id="form-error" class="error-text"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancel-modal">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
