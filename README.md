@@ -10,6 +10,7 @@ A Django REST Framework backend for a finance dashboard system with role-based a
 - **SQLite** — Database (zero setup)
 - **JWT (SimpleJWT)** — Token-based authentication
 - **django-filter** — Filtering support
+- **Vanilla HTML/CSS/JS** — Custom Frontend SPA with zero dependencies
 
 ## Quick Start
 
@@ -35,12 +36,22 @@ This creates 3 users and 60 sample financial records:
 | analyst | analyst123456 | Analyst |
 | viewer | viewer123456 | Viewer |
 
-### 4. Start the Development Server
-```bash
-python3 manage.py runserver
-```
+### 4. Start the Application
 
-Server runs at `http://127.0.0.1:8000/`
+You will need to run both the Django Backend API and the fully custom Vanilla JS Frontend. Open two terminal instances:
+
+**Terminal 1 (Backend API):**
+```bash
+python3 manage.py runserver 8081
+```
+*Server runs at `http://127.0.0.1:8081/`*
+
+**Terminal 2 (Frontend SPA):**
+```bash
+cd frontend
+python3 -m http.server 8000
+```
+*Access the beautiful UI at `http://localhost:8000/`*
 
 ### 5. Run Tests
 ```bash
@@ -198,8 +209,13 @@ curl -X POST http://127.0.0.1:8000/api/records/ \
 
 ```
 ├── finance_backend/        # Django project settings
-│   ├── settings.py         # Configuration
+│   ├── settings.py         # Configuration (CORS, JWT etc)
 │   └── urls.py             # Root URL routing
+├── frontend/               # Custom Vanilla JS Frontend SPA
+│   ├── app.js              # State management & API Fetch Logic
+│   ├── index.html          # SPA structure
+│   ├── styles.css          # Clean & Flat minimalist CSS
+│   └── README_FRONTEND.md  # Frontend specific documentation
 ├── users/                  # Authentication & user management
 │   ├── models.py           # Custom User model with roles
 │   ├── serializers.py      # Data validation & transformation
@@ -216,9 +232,11 @@ curl -X POST http://127.0.0.1:8000/api/records/ \
 │   └── tests.py            # 15 tests
 ├── dashboard/              # Analytics & insights
 │   ├── views.py            # Summary, trends, breakdown
-│   └── tests.py            # 9 tests (but test name count is different, there are 9 test methods)
+│   └── tests.py            # 9 tests
 ├── seed_data.py            # Database seeding script
 ├── requirements.txt        # Python dependencies
+├── GUIDE.md                # Guide to understanding Backend basics
+├── GUIDE2_FRONTEND.md      # Guide to understanding the Frontend mapping
 └── README.md               # This file
 ```
 
